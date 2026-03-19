@@ -1,0 +1,29 @@
+---
+- name: Setup Web Servers on all VMs
+  hosts: project_vms
+  become: yes
+
+  tasks:
+    - name: Update apt cache and install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Create a custom index.html page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <body style="font-family: Arial; text-align: center; margin-top: 50px;">
+            <h1>Success!</h1>
+            <h2>Welcome to {{ inventory_hostname }}</h2>
+            <p>This server was configured entirely by Ansible.</p>
+          </body>
+          </html>
